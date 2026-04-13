@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="PaymentShippingDataService\**" />
+    <Compile Remove="PaymentShippingModel\**" />
+    <Compile Remove="PaymentShippingService\**" />
+    <EmbeddedResource Remove="PaymentShippingDataService\**" />
+    <EmbeddedResource Remove="PaymentShippingModel\**" />
+    <EmbeddedResource Remove="PaymentShippingService\**" />
+    <None Remove="PaymentShippingDataService\**" />
+    <None Remove="PaymentShippingModel\**" />
+    <None Remove="PaymentShippingService\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PaymentShippingDataService\PaymentShippingDataService.csproj" />
     <ProjectReference Include="..\PaymentShippingModel\PaymentShippingModel.csproj" />
     <ProjectReference Include="..\PaymentShippingService\PaymentShippingService.csproj" />
