@@ -20,9 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PaymentShippingDataService\PaymentShippingDataService.csproj" />
-    <ProjectReference Include="..\PaymentShippingModel\PaymentShippingModel.csproj" />
-    <ProjectReference Include="..\PaymentShippingService\PaymentShippingService.csproj" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
   </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="PaymentShippingDataService\PaymentShippingDataService.csproj" />
+		<ProjectReference Include="PaymentShippingModel\PaymentShippingModel.csproj" />
+		<ProjectReference Include="PaymentShippingService\PaymentShippingService.csproj" />
+     </ItemGroup>  
 
 </Project>

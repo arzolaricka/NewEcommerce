@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PaymentShippingModel;
 using PaymentShippingDataService;
 
@@ -11,13 +6,16 @@ namespace PaymentShippingService
 {
     public class PaymentShippingService
     {
-        PaymentShippingDataService.PaymentShippingDataService data =
-        new PaymentShippingDataService.PaymentShippingDataService();
+        private IPaymentShippingDataService data;
+
+        public PaymentShippingService(IPaymentShippingDataService dataService)
+        {
+            data = dataService;
+        }
 
         public void AddPayment(string method, string name, string number)
         {
-            Payment payment = new Payment(method, name, number);
-            data.AddPayment(payment);
+            data.AddPayment(new Payment(method, name, number));
         }
 
         public List<Payment> ViewPayments()
@@ -25,21 +23,19 @@ namespace PaymentShippingService
             return data.GetPayments();
         }
 
-        public void UpdatePayment(int index, string method, string name, string number)
+        public void UpdatePayment(int id, string method, string name, string number)
         {
-            Payment payment = new Payment(method, name, number);
-            data.UpdatePayment(index, payment);
+            data.UpdatePayment(id, new Payment(method, name, number));
         }
 
-        public void DeletePayment(int index)
+        public void DeletePayment(int id)
         {
-            data.DeletePayment(index);
+            data.DeletePayment(id);
         }
 
         public void AddShipping(string name, string address)
         {
-            Shipping shipping = new Shipping(name, address);
-            data.AddShipping(shipping);
+            data.AddShipping(new Shipping(name, address));
         }
 
         public List<Shipping> ViewShipping()
@@ -47,15 +43,14 @@ namespace PaymentShippingService
             return data.GetShippings();
         }
 
-        public void UpdateShipping(int index, string name, string address)
+        public void UpdateShipping(int id, string name, string address)
         {
-            Shipping shipping = new Shipping(name, address);
-            data.UpdateShipping(index, shipping);
+            data.UpdateShipping(id, new Shipping(name, address));
         }
 
-        public void DeleteShipping(int index)
+        public void DeleteShipping(int id)
         {
-            data.DeleteShipping(index);
+            data.DeleteShipping(id);
         }
     }
 }

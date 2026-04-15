@@ -1,14 +1,15 @@
 ﻿using System;
 using PaymentShippingService;
+using PaymentShippingDataService;
 
 class Program
 {
     static void Main()
     {
-        PaymentShippingService.PaymentShippingService service =
-        new PaymentShippingService.PaymentShippingService();
+        var data = new DbDataService();
+        var service = new PaymentShippingService.PaymentShippingService(data);
 
-        string[] paymentOptions = { "Cash", "GCash", "Credit Card", "PayPal" };
+        string[] options = { "Cash", "GCash", "Credit Card", "PayPal" };
 
         while (true)
         {
@@ -27,170 +28,120 @@ class Program
             Console.Write("\nChoice: ");
             int choice = Convert.ToInt32(Console.ReadLine());
 
-            switch (choice)
+            if (choice == 1)
             {
-                case 1:
+                Console.WriteLine("\nSelect Method:");
+                for (int i = 0; i < options.Length; i++)
+                    Console.WriteLine(i + " - " + options[i]);
 
-                    Console.WriteLine("\nSelect Payment Method:");
+                int m = Convert.ToInt32(Console.ReadLine());
 
-                    for (int i = 0; i < paymentOptions.Length; i++)
-                    {
-                        Console.WriteLine(i + " - " + paymentOptions[i]);
-                    }
+                Console.Write("Name: ");
+                string name = Console.ReadLine();
 
-                    Console.Write("Choice: ");
-                    int methodChoice = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Number: ");
+                string num = Console.ReadLine();
 
-                    string method = paymentOptions[methodChoice];
-
-                    Console.Write("Account Name: ");
-                    string name = Console.ReadLine();
-
-                    Console.Write("Account Number / Email: ");
-                    string number = Console.ReadLine();
-
-                    service.AddPayment(method, name, number);
-
-                    Console.WriteLine("Payment Added!");
-                    Console.ReadKey();
-                    break;
-
-                case 2:
-
-                    var payments = service.ViewPayments();
-
-                    Console.WriteLine("\nPAYMENT LIST");
-
-                    for (int i = 0; i < payments.Count; i++)
-                    {
-                        Console.WriteLine(i + " | " +
-                        payments[i].Method + " | " +
-                        payments[i].AccountName + " | " +
-                        payments[i].AccountNumber);
-                    }
-
-                    Console.ReadKey();
-                    break;
-
-                case 3:
-
-                    var updatePayments = service.ViewPayments();
-
-                    for (int i = 0; i < updatePayments.Count; i++)
-                    {
-                        Console.WriteLine(i + " | " +
-                        updatePayments[i].Method + " | " +
-                        updatePayments[i].AccountName + " | " +
-                        updatePayments[i].AccountNumber);
-                    }
-
-                    Console.Write("\nEnter index to update: ");
-                    int updateIndex = Convert.ToInt32(Console.ReadLine());
-
-                    Console.WriteLine("\nSelect New Method:");
-
-                    for (int i = 0; i < paymentOptions.Length; i++)
-                    {
-                        Console.WriteLine(i + " - " + paymentOptions[i]);
-                    }
-
-                    int newMethodChoice = Convert.ToInt32(Console.ReadLine());
-
-                    string newMethod = paymentOptions[newMethodChoice];
-
-                    Console.Write("New Account Name: ");
-                    string newName = Console.ReadLine();
-
-                    Console.Write("New Account Number / Email: ");
-                    string newNumber = Console.ReadLine();
-
-                    service.UpdatePayment(updateIndex, newMethod, newName, newNumber);
-
-                    Console.WriteLine("Payment Updated!");
-                    Console.ReadKey();
-                    break;
-
-                case 4:
-
-                    Console.Write("Enter Payment Index: ");
-                    int deleteIndex = Convert.ToInt32(Console.ReadLine());
-
-                    service.DeletePayment(deleteIndex);
-
-                    Console.WriteLine("Payment Deleted");
-                    Console.ReadKey();
-                    break;
-
-                case 5:
-
-                    Console.Write("Name: ");
-                    string shipName = Console.ReadLine();
-
-                    Console.Write("Address: ");
-                    string address = Console.ReadLine();
-
-                    service.AddShipping(shipName, address);
-
-                    Console.WriteLine("Shipping Added");
-                    Console.ReadKey();
-                    break;
-
-                case 6:
-
-                    var shippings = service.ViewShipping();
-
-                    Console.WriteLine("\nSHIPPING LIST");
-
-                    for (int i = 0; i < shippings.Count; i++)
-                    {
-                        Console.WriteLine(i + " | " +
-                        shippings[i].Name + " | " +
-                        shippings[i].Address);
-                    }
-
-                    Console.ReadKey();
-                    break;
-
-                case 7:
-
-                    var updateShipping = service.ViewShipping();
-
-                    for (int i = 0; i < updateShipping.Count; i++)
-                    {
-                        Console.WriteLine(i + " | " +
-                        updateShipping[i].Name + " | " +
-                        updateShipping[i].Address);
-                    }
-
-                    Console.Write("\nEnter index to update: ");
-                    int shipIndex = Convert.ToInt32(Console.ReadLine());
-
-                    Console.Write("New Name: ");
-                    string newShipName = Console.ReadLine();
-
-                    Console.Write("New Address: ");
-                    string newAddress = Console.ReadLine();
-
-                    service.UpdateShipping(shipIndex, newShipName, newAddress);
-
-                    Console.WriteLine("Shipping Updated");
-                    Console.ReadKey();
-                    break;
-
-                case 8:
-
-                    Console.Write("Enter Shipping Index: ");
-                    int deleteShip = Convert.ToInt32(Console.ReadLine());
-
-                    service.DeleteShipping(deleteShip);
-
-                    Console.WriteLine("Shipping Deleted");
-                    Console.ReadKey();
-                    break;
-
-                case 9:
-                    return;
+                service.AddPayment(options[m], name, num);
             }
+
+            else if (choice == 2)
+            {
+                var list = service.ViewPayments();
+
+                for (int i = 0; i < list.Count; i++)
+                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Method} | {list[i].AccountName}");
+
+                Console.ReadKey();
+            }
+
+            else if (choice == 3)
+            {
+                var list = service.ViewPayments();
+
+                for (int i = 0; i < list.Count; i++)
+                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Method} | {list[i].AccountName}");
+
+                Console.Write("Index to update: ");
+                int index = Convert.ToInt32(Console.ReadLine());
+
+                Console.Write("New Name: ");
+                string name = Console.ReadLine();
+
+                Console.Write("New Number: ");
+                string num = Console.ReadLine();
+
+                service.UpdatePayment(list[index].Id, list[index].Method, name, num);
+            }
+
+            else if (choice == 4)
+            {
+                var list = service.ViewPayments();
+
+                for (int i = 0; i < list.Count; i++)
+                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Method} | {list[i].AccountName}");
+
+                Console.Write("Index to delete: ");
+                int index = Convert.ToInt32(Console.ReadLine());
+
+                service.DeletePayment(list[index].Id);
+            }
+
+            else if (choice == 5)
+            {
+                Console.Write("Name: ");
+                string name = Console.ReadLine();
+
+                Console.Write("Address: ");
+                string addr = Console.ReadLine();
+
+                service.AddShipping(name, addr);
+            }
+
+            else if (choice == 6)
+            {
+                var list = service.ViewShipping();
+
+                for (int i = 0; i < list.Count; i++)
+                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Name} | {list[i].Address}");
+
+                Console.ReadKey();
+            }
+
+            else if (choice == 7)
+            {
+                var list = service.ViewShipping();
+
+                for (int i = 0; i < list.Count; i++)
+                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Name} | {list[i].Address}");
+
+                Console.Write("Index to update: ");
+                int index = Convert.ToInt32(Console.ReadLine());
+
+                Console.Write("New Name: ");
+                string name = Console.ReadLine();
+
+                Console.Write("New Address: ");
+                string addr = Console.ReadLine();
+
+                service.UpdateShipping(list[index].Id, name, addr);
+            }
+
+            else if (choice == 8)
+            {
+                var list = service.ViewShipping();
+
+                for (int i = 0; i < list.Count; i++)
+                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Name} | {list[i].Address}");
+
+                Console.Write("Index to delete: ");
+                int index = Convert.ToInt32(Console.ReadLine());
+
+                service.DeleteShipping(list[index].Id);
+            }
+
+            else if (choice == 9)
+                return;
         }
     }
 }
