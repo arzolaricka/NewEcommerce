@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using PaymentShippingService;
 using PaymentShippingDataService;
 
@@ -35,22 +37,56 @@ class Program
                     Console.WriteLine(i + " - " + options[i]);
 
                 int m = Convert.ToInt32(Console.ReadLine());
+                string method = options[m];
 
                 Console.Write("Name: ");
                 string name = Console.ReadLine();
 
-                Console.Write("Number: ");
-                string num = Console.ReadLine();
+                string input = "";
 
-                service.AddPayment(options[m], name, num);
+                while (true)
+                {
+                    if (method == "GCash" || method == "Credit Card")
+                        Console.Write("Enter your number: ");
+                    else if (method == "PayPal")
+                        Console.Write("Enter your email: ");
+                    else
+                    {
+                        input = "N/A";
+                        break;
+                    }
+
+                    input = Console.ReadLine();
+
+                    if (method == "GCash" || method == "Credit Card")
+                    {
+                        if (!IsNumber(input))
+                        {
+                            Console.WriteLine("❌ Must be numbers only!");
+                            continue;
+                        }
+                    }
+                    else if (method == "PayPal")
+                    {
+                        if (!IsEmail(input))
+                        {
+                            Console.WriteLine("❌ Must be a valid email!");
+                            continue;
+                        }
+                    }
+
+                    break;
+                }
+
+                service.AddPayment(method, name, input);
             }
 
             else if (choice == 2)
             {
                 var list = service.ViewPayments();
 
-                for (int i = 0; i < list.Count; i++)
-                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Method} | {list[i].AccountName}");
+                foreach (var p in list)
+                    Console.WriteLine($"ID:{p.Id} | {p.Method} | {p.AccountName} | {p.AccountNumber}");
 
                 Console.ReadKey();
             }
@@ -59,32 +95,81 @@ class Program
             {
                 var list = service.ViewPayments();
 
-                for (int i = 0; i < list.Count; i++)
-                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Method} | {list[i].AccountName}");
+                foreach (var p in list)
+                    Console.WriteLine($"ID:{p.Id} | {p.Method} | {p.AccountName}");
 
-                Console.Write("Index to update: ");
-                int index = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter ID to update: ");
+                int id = Convert.ToInt32(Console.ReadLine());
+
+                var item = list.FirstOrDefault(x => x.Id == id);
+
+                if (item == null)
+                {
+                    Console.WriteLine("ID not found!");
+                    Console.ReadKey();
+                    continue;
+                }
+
+                Console.WriteLine("\nSelect NEW Method:");
+                for (int i = 0; i < options.Length; i++)
+                    Console.WriteLine(i + " - " + options[i]);
+
+                int m = Convert.ToInt32(Console.ReadLine());
+                string method = options[m];
 
                 Console.Write("New Name: ");
                 string name = Console.ReadLine();
 
-                Console.Write("New Number: ");
-                string num = Console.ReadLine();
+                string input = "";
 
-                service.UpdatePayment(list[index].Id, list[index].Method, name, num);
+                while (true)
+                {
+                    if (method == "GCash" || method == "Credit Card")
+                        Console.Write("Enter your number: ");
+                    else if (method == "PayPal")
+                        Console.Write("Enter your email: ");
+                    else
+                    {
+                        input = "N/A";
+                        break;
+                    }
+
+                    input = Console.ReadLine();
+
+                    if (method == "GCash" || method == "Credit Card")
+                    {
+                        if (!IsNumber(input))
+                        {
+                            Console.WriteLine("❌ Must be numbers only!");
+                            continue;
+                        }
+                    }
+                    else if (method == "PayPal")
+                    {
+                        if (!IsEmail(input))
+                        {
+                            Console.WriteLine("❌ Must be a valid email!");
+                            continue;
+                        }
+                    }
+
+                    break;
+                }
+
+                service.UpdatePayment(id, method, name, input);
             }
 
             else if (choice == 4)
             {
                 var list = service.ViewPayments();
 
-                for (int i = 0; i < list.Count; i++)
-                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Method} | {list[i].AccountName}");
+                foreach (var p in list)
+                    Console.WriteLine($"ID:{p.Id} | {p.Method} | {p.AccountName}");
 
-                Console.Write("Index to delete: ");
-                int index = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter ID to delete: ");
+                int id = Convert.ToInt32(Console.ReadLine());
 
-                service.DeletePayment(list[index].Id);
+                service.DeletePayment(id);
             }
 
             else if (choice == 5)
@@ -102,8 +187,8 @@ class Program
             {
                 var list = service.ViewShipping();
 
-                for (int i = 0; i < list.Count; i++)
-                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Name} | {list[i].Address}");
+                foreach (var s in list)
+                    Console.WriteLine($"ID:{s.Id} | {s.Name} | {s.Address}");
 
                 Console.ReadKey();
             }
@@ -112,11 +197,20 @@ class Program
             {
                 var list = service.ViewShipping();
 
-                for (int i = 0; i < list.Count; i++)
-                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Name} | {list[i].Address}");
+                foreach (var s in list)
+                    Console.WriteLine($"ID:{s.Id} | {s.Name} | {s.Address}");
 
-                Console.Write("Index to update: ");
-                int index = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter ID to update: ");
+                int id = Convert.ToInt32(Console.ReadLine());
+
+                var item = list.FirstOrDefault(x => x.Id == id);
+
+                if (item == null)
+                {
+                    Console.WriteLine("ID not found!");
+                    Console.ReadKey();
+                    continue;
+                }
 
                 Console.Write("New Name: ");
                 string name = Console.ReadLine();
@@ -124,25 +218,35 @@ class Program
                 Console.Write("New Address: ");
                 string addr = Console.ReadLine();
 
-                service.UpdateShipping(list[index].Id, name, addr);
+                service.UpdateShipping(id, name, addr);
             }
 
             else if (choice == 8)
             {
                 var list = service.ViewShipping();
 
-                for (int i = 0; i < list.Count; i++)
-                    Console.WriteLine($"{i} - ID:{list[i].Id} | {list[i].Name} | {list[i].Address}");
+                foreach (var s in list)
+                    Console.WriteLine($"ID:{s.Id} | {s.Name} | {s.Address}");
 
-                Console.Write("Index to delete: ");
-                int index = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter ID to delete: ");
+                int id = Convert.ToInt32(Console.ReadLine());
 
-                service.DeleteShipping(list[index].Id);
+                service.DeleteShipping(id);
             }
 
             else if (choice == 9)
                 return;
         }
     }
-}
 
+
+    static bool IsNumber(string input)
+    {
+        return Regex.IsMatch(input, @"^[0-9]+$");
+    }
+
+    static bool IsEmail(string input)
+    {
+        return Regex.IsMatch(input, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+    }
+}

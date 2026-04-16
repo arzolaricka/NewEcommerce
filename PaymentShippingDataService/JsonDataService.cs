@@ -10,92 +10,175 @@ using PaymentShippingModel;
 
 namespace PaymentShippingDataService
 {
-    public class JsonDataService : IPaymentShippingDataService
+    public class PaymentJsonData : IPaymentShippingDataService
     {
-        private string paymentFile = "payments.json";
-        private string shippingFile = "shippings.json";
+        private List<Payment> payments = new List<Payment>();
+        private List<Shipping> shippings = new List<Shipping>();
 
-        private string _jsonFileName;
+        private string paymentFile;
+        private string shippingFile;
 
-
-        private List<Payment> LoadPayments()
+        public PaymentJsonData()
         {
-            if (!File.Exists(paymentFile)) return new List<Payment>();
-            return JsonSerializer.Deserialize<List<Payment>>(File.ReadAllText(paymentFile));
+            paymentFile = $"{AppDomain.CurrentDomain.BaseDirectory}/Payments.json";
+            shippingFile = $"{AppDomain.CurrentDomain.BaseDirectory}/Shippings.json";
+
+            PopulateJsonFile();
         }
 
-        private void SavePayments(List<Payment> payments)
+        private void PopulateJsonFile()
         {
-            File.WriteAllText(paymentFile, JsonSerializer.Serialize(payments));
+            RetrievePayments();
+            RetrieveShippings();
+
+            if (payments.Count <= 0)
+            {
+                payments.Add(new Payment { Id = 1, Method = "GCash", AccountName = "Sample", AccountNumber = "09123456789" });
+                SavePayments();
+            }
+
+            if (shippings.Count <= 0)
+            {
+                shippings.Add(new Shipping { Id = 1, Name = "Sample", Address = "Manila" });
+                SaveShippings();
+            }
         }
 
-        private List<Shipping> LoadShippings()
+
+        private void SavePayments()
         {
-            if (!File.Exists(shippingFile)) return new List<Shipping>();
-            return JsonSerializer.Deserialize<List<Shipping>>(File.ReadAllText(shippingFile));
+            using (var stream = File.OpenWrite(paymentFile))
+            {
+                JsonSerializer.Serialize(
+                    new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }),
+                    payments);
+            }
         }
 
-        private void SaveShippings(List<Shipping> shippings)
+        private void SaveShippings()
         {
-            File.WriteAllText(shippingFile, JsonSerializer.Serialize(shippings));
+            using (var stream = File.OpenWrite(shippingFile))
+            {
+                JsonSerializer.Serialize(
+                    new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }),
+                    shippings);
+            }
+        }
+
+
+        private void RetrievePayments()
+        {
+            if (!File.Exists(paymentFile))
+            {
+                payments = new List<Payment>();
+                return;
+            }
+
+            using (var reader = File.OpenText(paymentFile))
+            {
+                payments = JsonSerializer.Deserialize<List<Payment>>(
+                    reader.ReadToEnd(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? new List<Payment>();
+            }
+        }
+
+        private void RetrieveShippings()
+        {
+            if (!File.Exists(shippingFile))
+            {
+                shippings = new List<Shipping>();
+                return;
+            }
+
+            using (var reader = File.OpenText(shippingFile))
+            {
+                shippings = JsonSerializer.Deserialize<List<Shipping>>(
+                    reader.ReadToEnd(),
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? new List<Shipping>();
+            }
         }
 
         public void AddPayment(Payment payment)
         {
-            var list = LoadPayments();
-            list.Add(payment);
-            SavePayments(list);
+            RetrievePayments();
+
+            payment.Id = payments.Count > 0 ? payments.Max(x => x.Id) + 1 : 1;
+
+            payments.Add(payment);
+            SavePayments();
         }
 
-        public List<Payment> GetPayments() => LoadPayments();
-
-        public void UpdatePayment(int index, Payment payment)
+        public List<Payment> GetPayments()
         {
-            var list = LoadPayments();
-            if (index >= 0 && index < list.Count)
-            {
-                list[index] = payment;
-                SavePayments(list);
-            }
+            RetrievePayments();
+            return payments;
         }
 
-        public void DeletePayment(int index)
+        public void UpdatePayment(int id, Payment payment)
         {
-            var list = LoadPayments();
-            if (index >= 0 && index < list.Count)
+            RetrievePayments();
+
+            var existing = payments.FirstOrDefault(x => x.Id == id);
+
+            if (existing != null)
             {
-                list.RemoveAt(index);
-                SavePayments(list);
+                existing.Method = payment.Method;
+                existing.AccountName = payment.AccountName;
+                existing.AccountNumber = payment.AccountNumber;
             }
+
+            SavePayments();
+        }
+
+        public void DeletePayment(int id)
+        {
+            RetrievePayments();
+
+            payments.RemoveAll(x => x.Id == id);
+
+            SavePayments();
         }
 
         public void AddShipping(Shipping shipping)
         {
-            var list = LoadShippings();
-            list.Add(shipping);
-            SaveShippings(list);
+            RetrieveShippings();
+
+            shipping.Id = shippings.Count > 0 ? shippings.Max(x => x.Id) + 1 : 1;
+
+            shippings.Add(shipping);
+            SaveShippings();
         }
 
-        public List<Shipping> GetShippings() => LoadShippings();
-
-        public void UpdateShipping(int index, Shipping shipping)
+        public List<Shipping> GetShippings()
         {
-            var list = LoadShippings();
-            if (index >= 0 && index < list.Count)
-            {
-                list[index] = shipping;
-                SaveShippings(list);
-            }
+            RetrieveShippings();
+            return shippings;
         }
 
-        public void DeleteShipping(int index)
+        public void UpdateShipping(int id, Shipping shipping)
         {
-            var list = LoadShippings();
-            if (index >= 0 && index < list.Count)
+            RetrieveShippings();
+
+            var existing = shippings.FirstOrDefault(x => x.Id == id);
+
+            if (existing != null)
             {
-                list.RemoveAt(index);
-                SaveShippings(list);
+                existing.Name = shipping.Name;
+                existing.Address = shipping.Address;
             }
+
+            SaveShippings();
+        }
+
+        public void DeleteShipping(int id)
+        {
+            RetrieveShippings();
+
+            shippings.RemoveAll(x => x.Id == id);
+
+            SaveShippings();
         }
     }
 }
