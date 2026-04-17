@@ -13,6 +13,11 @@ namespace PaymentShippingModel
             public string AccountName { get; set; }
             public string AccountNumber { get; set; }
 
+        public Payment ()
+        {
+
+        }
+
             public Payment(int id, string method, string name, string number)
             {
                 Id = id;
@@ -42,6 +47,11 @@ namespace PaymentShippingModel
                 Name = name;
                 Address = address;
             }
+      
+            public Shipping ()
+    {
+
+    }
 
             public Shipping(string name, string address)
             {

@@ -10,7 +10,7 @@ using PaymentShippingModel;
 
 namespace PaymentShippingDataService
 {
-    public class PaymentJsonData : IPaymentShippingDataService
+    public class JsonDataService : IPaymentShippingDataService
     {
         private List<Payment> payments = new List<Payment>();
         private List<Shipping> shippings = new List<Shipping>();
@@ -18,7 +18,7 @@ namespace PaymentShippingDataService
         private string paymentFile;
         private string shippingFile;
 
-        public PaymentJsonData()
+        public JsonDataService()
         {
             paymentFile = $"{AppDomain.CurrentDomain.BaseDirectory}/Payments.json";
             shippingFile = $"{AppDomain.CurrentDomain.BaseDirectory}/Shippings.json";

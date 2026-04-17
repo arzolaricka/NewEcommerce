@@ -8,8 +8,8 @@ class Program
 {
     static void Main()
     {
-        var data = new DbDataService();
-        var service = new PaymentShippingService.PaymentShippingService(data);
+        var Json = new JsonDataService();
+        var service = new PaymentShippingService.PaymentShippingService(Json);
 
         string[] options = { "Cash", "GCash", "Credit Card", "PayPal" };
 
