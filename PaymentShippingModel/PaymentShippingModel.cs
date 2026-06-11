@@ -14,7 +14,6 @@ namespace PaymentShippingModel
         public string AccountName { get; set; }
         public string? AccountNumber { get; set; }
 
-        // ─── Extra fields for Credit Card ───────────────────────────────────
         public string? CardExpiry { get; set; }
         public string? CardCVV { get; set; }
         public string? BankName { get; set; }
@@ -92,7 +91,7 @@ namespace PaymentShippingModel
         public string Name { get; set; }
         public string Address { get; set; }
 
-        // ─── Google Maps Pin ─────────────────────────────────────────────────
+      
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
@@ -115,7 +114,7 @@ namespace PaymentShippingModel
             Longitude = longitude;
         }
 
-        // Keep old constructors so existing code doesn't break
+    
         public Shipping(int id, string name, string address)
         {
             Id = id;
