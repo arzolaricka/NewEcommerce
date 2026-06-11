@@ -272,12 +272,15 @@ namespace PaymentShippingDataService
 
                     while (reader.Read())
                     {
+                        double lat = reader.IsDBNull(3) ? 0 : reader.GetDouble(3);
+                        double lng = reader.IsDBNull(4) ? 0 : reader.GetDouble(4);
+
                         list.Add(new Shipping(
                             reader.GetInt32(0),
                             reader.GetString(1),
                             reader.GetString(2),
-                            reader.GetDouble(3),
-                            reader.GetDouble(4)
+                            lat,
+                            lng
                         ));
                     }
                 }
@@ -289,7 +292,6 @@ namespace PaymentShippingDataService
 
             return list;
         }
-
         public void UpdateShipping(int id, Shipping shipping)
         {
             try
