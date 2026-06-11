@@ -42,5 +42,25 @@ namespace PaymentShippingDataService
             if (index >= 0 && index < shippings.Count)
                 shippings.RemoveAt(index);
         }
+
+        public void AddCreditCardPayment(string nameOnCard, string cardNumber, string expiry, string cvv)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddBankAccountPayment(string bankName, string accountHolder, string accountNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateCreditCardPayment(int id, string nameOnCard, string cardNumber, string expiry, string cvv)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateBankAccountPayment(int id, string bankName, string accountHolder, string accountNumber)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

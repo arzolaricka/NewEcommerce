@@ -110,6 +110,32 @@ namespace PaymentShippingDataService
             SavePayments();
         }
 
+        public void AddCreditCardPayment(string nameOnCard, string cardNumber, string expiry, string cvv)
+        {
+            RetrievePayments();
+
+            var payment = new Payment(nameOnCard, cardNumber, expiry, cvv)
+            {
+                Id = payments.Count > 0 ? payments.Max(x => x.Id) + 1 : 1
+            };
+
+            payments.Add(payment);
+            SavePayments();
+        }
+
+        public void AddBankAccountPayment(string bankName, string accountHolder, string accountNumber)
+        {
+            RetrievePayments();
+
+            var payment = new Payment(bankName, accountHolder, accountNumber, true)
+            {
+                Id = payments.Count > 0 ? payments.Max(x => x.Id) + 1 : 1
+            };
+
+            payments.Add(payment);
+            SavePayments();
+        }
+
         public List<Payment> GetPayments()
         {
             RetrievePayments();
@@ -127,6 +153,42 @@ namespace PaymentShippingDataService
                 existing.Method = payment.Method;
                 existing.AccountName = payment.AccountName;
                 existing.AccountNumber = payment.AccountNumber;
+            }
+
+            SavePayments();
+        }
+
+        public void UpdateCreditCardPayment(int id, string nameOnCard, string cardNumber, string expiry, string cvv)
+        {
+            RetrievePayments();
+
+            var existing = payments.FirstOrDefault(x => x.Id == id);
+
+            if (existing != null)
+            {
+                existing.Method = "Credit Card";
+                existing.AccountName = nameOnCard;
+                existing.AccountNumber = cardNumber;
+                existing.CardExpiry = expiry;
+                existing.CardCVV = cvv;
+            }
+
+            SavePayments();
+        }
+
+        public void UpdateBankAccountPayment(int id, string bankName, string accountHolder, string accountNumber)
+        {
+            RetrievePayments();
+
+            var existing = payments.FirstOrDefault(x => x.Id == id);
+
+            if (existing != null)
+            {
+                existing.Method = "Bank Account";
+                existing.BankName = bankName;
+                existing.AccountHolder = accountHolder;
+                existing.AccountName = $"{bankName}|{accountHolder}";
+                existing.AccountNumber = accountNumber;
             }
 
             SavePayments();

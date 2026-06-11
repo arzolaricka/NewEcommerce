@@ -12,11 +12,19 @@ namespace PaymentShippingDataService
     {
         private List<Payment> payments = new List<Payment>();
         private List<Shipping> shippings = new List<Shipping>();
-
-
         public void AddPayment(Payment payment)
         {
             payments.Add(payment);
+        }
+
+        public void AddCreditCardPayment(string nameOnCard, string cardNumber, string expiry, string cvv)
+        {
+            payments.Add(new Payment(nameOnCard, cardNumber, expiry, cvv));
+        }
+
+        public void AddBankAccountPayment(string bankName, string accountHolder, string accountNumber)
+        {
+            payments.Add(new Payment(bankName, accountHolder, accountNumber, true));
         }
 
         public List<Payment> GetPayments()
@@ -32,6 +40,22 @@ namespace PaymentShippingDataService
             }
         }
 
+        public void UpdateCreditCardPayment(int index, string nameOnCard, string cardNumber, string expiry, string cvv)
+        {
+            if (index >= 0 && index < payments.Count)
+            {
+                payments[index] = new Payment(nameOnCard, cardNumber, expiry, cvv);
+            }
+        }
+
+        public void UpdateBankAccountPayment(int index, string bankName, string accountHolder, string accountNumber)
+        {
+            if (index >= 0 && index < payments.Count)
+            {
+                payments[index] = new Payment(bankName, accountHolder, accountNumber, true);
+            }
+        }
+
         public void DeletePayment(int index)
         {
             if (index >= 0 && index < payments.Count)
@@ -40,7 +64,6 @@ namespace PaymentShippingDataService
             }
         }
 
-      
         public void AddShipping(Shipping shipping)
         {
             shippings.Add(shipping);
