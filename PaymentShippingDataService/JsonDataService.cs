@@ -55,13 +55,14 @@ namespace PaymentShippingDataService
             }
         }
 
-        private void SaveShippings()
+         private void SaveShippings()
         {
-            using (var stream = File.OpenWrite(shippingFile))
+            using (var stream = new FileStream(shippingFile, FileMode.Create, FileAccess.Write))
             {
-                JsonSerializer.Serialize(
-                    new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }),
-                    shippings);
+                using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }))
+                {
+                    JsonSerializer.Serialize(writer, shippings);
+                }
             }
         }
 
