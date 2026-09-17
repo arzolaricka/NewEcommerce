@@ -20,13 +20,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.18.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.12" />
   </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="PaymentShippingDataService\PaymentShippingDataService.csproj" />
 		<ProjectReference Include="PaymentShippingModel\PaymentShippingModel.csproj" />
 		<ProjectReference Include="PaymentShippingService\PaymentShippingService.csproj" />
-     </ItemGroup>  
+     </ItemGroup>
+
+	<ItemGroup>
+	  <None Update="appsettings.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>  
 
 </Project>
